@@ -1,15 +1,14 @@
 package com.example.demo.infrastructure;
 
 import com.example.demo.domain.Note;
-import com.example.demo.domain.User;
 import lombok.Getter;
 
 @Getter
 public class NoteEntity {
-    private Long id;
-    private String title;
-    private String content;
-    private UserEntity user;
+    private final Long id;
+    private final String title;
+    private final String content;
+    private final UserEntity user;
 
     public NoteEntity(Long id, String title, String content, UserEntity user) {
         this.id = id;
@@ -18,15 +17,13 @@ public class NoteEntity {
         this.user = user;
     }
 
-    public NoteEntity(Note note, User user) {
-        this.id = note.getId().getValue();
-        this.title = note.getTitle();
-        this.content = note.getContent();
-        this.user = new UserEntity(user);
-    }
 
     public Note toDomain() {
-        return new Note();
+        return Note.builder().id(new Note.Id(this.id)).title(this.title).content(this.content).writer(this.user.toModel()).build();
+    }
+
+    public static NoteEntity from(Note note) {
+        return new NoteEntity(Long.valueOf(note.getId().toString()), note.getTitle(), note.getContent(), UserEntity.from(note.getWriter()));
     }
 }
 

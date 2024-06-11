@@ -4,8 +4,6 @@ import com.example.demo.application.port.in.ReadNoteUseCase;
 import com.example.demo.application.port.in.RequestNote;
 import com.example.demo.application.port.in.WriteNoteUseCase;
 import com.example.demo.application.port.out.NoteRepository;
-import com.example.demo.application.port.out.UserRepository;
-import com.example.demo.domain.CountNotes;
 import com.example.demo.domain.Note;
 import com.example.demo.domain.User;
 import org.springframework.stereotype.Service;
@@ -23,18 +21,16 @@ public class NoteService implements WriteNoteUseCase, ReadNoteUseCase {
 
     @Override
     public Note.Id write(RequestNote requestNote, User user) {
-        CountNotes countNotes = noteRepository.countNotes(user.getId());
-        if (!validate(user, countNotes)) {
-            throw new CannotWriteNoteException();
-        }
-        return noteRepository.save(Note.from(requestNote, user), user);
+        checkNoteLimitBy(user);
+        return noteRepository.save(Note.from(requestNote, user));
     }
 
-    private boolean validate(User user, CountNotes countNotes) {
-        if (!(user.getMembership().isFree() && countNotes.isOverLimitBy(5))) {
-            return false;
+    private void checkNoteLimitBy(User user) {
+        int limit = user.getMembership().getLimit();
+        int counted = noteRepository.count(user.getId());
+        if (counted > limit) {
+            throw new CannotWriteNoteException(counted, limit);
         }
-        return user.getMembership().isBasic() && countNotes.isOverLimitBy(100);
     }
 
     @Override

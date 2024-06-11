@@ -1,6 +1,5 @@
 package com.example.demo.application.port.out;
 
-import com.example.demo.domain.CountNotes;
 import com.example.demo.domain.Note;
 import com.example.demo.domain.User;
 
@@ -15,8 +14,8 @@ public interface NoteRepository {
 
     List<Note> findAll();
 
-    Note.Id save(Note note, User user);
+    Note.Id save(Note note);
 
-    CountNotes countNotes(User.Id userId);
+    int count(User.Id userId);
 
 }

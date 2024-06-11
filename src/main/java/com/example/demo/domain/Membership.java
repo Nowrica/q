@@ -9,7 +9,6 @@ public class Membership {
 
     private Timestamp expirationDate;
 
-
     public void upgrade() {
         type = Type.PREMIUM;
     }
@@ -38,5 +37,7 @@ public class Membership {
         return isFree() && isExpired();
     }
 
-
+    public int getLimit() {
+        return type.getLimit();
+    }
 }
