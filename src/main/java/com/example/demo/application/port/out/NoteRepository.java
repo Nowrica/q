@@ -15,7 +15,7 @@ public interface NoteRepository {
 
     List<Note> findAll();
 
-    void save(Note note, User user);
+    Note.Id save(Note note, User user);
 
     CountNotes countNotes(User.Id userId);
 

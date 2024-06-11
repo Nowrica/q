@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public class User {
 
-    private Id id;
+    @Getter private Id id;
 
 
     @Getter

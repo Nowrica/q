@@ -36,8 +36,8 @@ public class NoteRepositoryImpl implements NoteRepository {
     }
 
     @Override
-    public void save(Note note, User user) {
-        noteJpaRepository.save(new NoteEntity(note, user));
+    public Note.Id save(Note note, User user) {
+        return new Note.Id(noteJpaRepository.save(new NoteEntity(note, user)));
     }
 
     @Override

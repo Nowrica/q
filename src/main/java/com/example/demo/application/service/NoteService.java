@@ -16,26 +16,25 @@ import java.util.List;
 public class NoteService implements WriteNoteUseCase, ReadNoteUseCase {
 
     private final NoteRepository noteRepository;
-    private final UserRepository userRepository;
 
-    public NoteService(NoteRepository noteRepository, UserRepository userRepository) {
+    public NoteService(NoteRepository noteRepository) {
         this.noteRepository = noteRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
-    public void write(RequestNote requestNote, User.Id userId) {
-        User user = userRepository.findById(userId);
-        if (user.getMembership().isFreeAndExpired()) {
-            throw new FreeUserCannotWriteNoteException("User is not allowed to write notes");
+    public Note.Id write(RequestNote requestNote, User user) {
+        CountNotes countNotes = noteRepository.countNotes(user.getId());
+        if (!validate(user, countNotes)) {
+            throw new CannotWriteNoteException();
         }
-        CountNotes countNotes = noteRepository.countNotes(userId);
-        if (countNotes.isOverLimit()) {
-            throw new UserHasExceededNoteLimitException("User has exceeded note limit");
+        return noteRepository.save(Note.from(requestNote, user), user);
+    }
+
+    private boolean validate(User user, CountNotes countNotes) {
+        if (!(user.getMembership().isFree() && countNotes.isOverLimitBy(5))) {
+            return false;
         }
-
-        noteRepository.save(requestNote.toDomain(), user);
-
+        return user.getMembership().isBasic() && countNotes.isOverLimitBy(100);
     }
 
     @Override

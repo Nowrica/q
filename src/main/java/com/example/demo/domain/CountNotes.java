@@ -2,7 +2,7 @@ package com.example.demo.domain;
 
 public record CountNotes(Long value) {
 
-    public boolean isOverLimit() {
-        return value > 5;
+    public boolean isOverLimitBy(int count) {
+        return count <= value;
     }
 }

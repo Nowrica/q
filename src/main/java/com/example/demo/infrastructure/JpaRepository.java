@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface JpaRepository<T, R> {
 
-    void save(T entity);
+    R save(T entity);
 
     List<T> findAll();
 
