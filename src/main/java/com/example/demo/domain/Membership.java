@@ -5,9 +5,19 @@ import java.sql.Timestamp;
 public class Membership {
     private Type type;
 
-    private Timestamp startDate;
+    private final Timestamp startDate;
 
-    private Timestamp expirationDate;
+    private final Timestamp expirationDate;
+
+    public Membership(Type type, Timestamp startDate, Timestamp expirationDate) {
+        this.type = type;
+        this.startDate = startDate;
+        this.expirationDate = expirationDate;
+    }
+
+    public static Membership createFree() {
+        return new Membership(Type.FREE, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+    }
 
     public void upgrade() {
         type = Type.PREMIUM;
@@ -27,6 +37,10 @@ public class Membership {
 
     public boolean isPremium() {
         return type == Type.PREMIUM;
+    }
+
+    public boolean isStarted() {
+        return startDate.before(new Timestamp(System.currentTimeMillis()));
     }
 
     public boolean isExpired() {

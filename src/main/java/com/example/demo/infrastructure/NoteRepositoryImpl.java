@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public class NoteRepositoryImpl implements NoteRepository {
+
     private final NoteJpaRepository noteJpaRepository;
 
     public NoteRepositoryImpl(NoteJpaRepository noteJpaRepository) {
@@ -18,7 +19,7 @@ public class NoteRepositoryImpl implements NoteRepository {
 
     @Override
     public Optional<Note> getById(Long id) {
-        return noteJpaRepository.getById(id).map(NoteEntity::toDomain);
+        return noteJpaRepository.findById(id).map(NoteEntity::toDomain);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class NoteRepositoryImpl implements NoteRepository {
 
     @Override
     public Note.Id save(Note note) {
-        return new Note.Id(noteJpaRepository.save(NoteEntity.from(note)));
+        return new Note.Id(noteJpaRepository.save(NoteEntity.from(note)).getId());
     }
 
     @Override

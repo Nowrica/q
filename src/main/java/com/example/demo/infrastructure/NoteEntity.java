@@ -1,14 +1,26 @@
 package com.example.demo.infrastructure;
 
 import com.example.demo.domain.Note;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
+@Entity
+@Table(name = "notes")
 public class NoteEntity {
-    private final Long id;
-    private final String title;
-    private final String content;
-    private final UserEntity user;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+
+    private String content;
+
+    @ManyToOne
+    private UserEntity user;
+
+    public NoteEntity() {
+    }
 
     public NoteEntity(Long id, String title, String content, UserEntity user) {
         this.id = id;
@@ -25,5 +37,6 @@ public class NoteEntity {
     public static NoteEntity from(Note note) {
         return new NoteEntity(Long.valueOf(note.getId().toString()), note.getTitle(), note.getContent(), UserEntity.from(note.getWriter()));
     }
+
 }
 

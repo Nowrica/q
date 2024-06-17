@@ -2,8 +2,9 @@ package com.example.demo.application.port.out;
 
 import com.example.demo.domain.User;
 
+import java.util.Optional;
+
 public interface UserRepository {
 
-    User findById(User.Id userId);
-
+    Optional<User> findByUsername(String username);
 }
